@@ -12,6 +12,8 @@ namespace ZethconLibrary
         internal static ActivateUserResponseModel ActivateUserMethod(ActivateUserRequestModel requestApp)
         {
             ActivateUserResponseModel responseModel = new ActivateUserResponseModel();
+            ErrorResponseModel errResp = new ErrorResponseModel();
+            RequestException httpEx = new RequestException();
 
             try
             {
@@ -22,12 +24,47 @@ namespace ZethconLibrary
                 request.AddParameter("undefined", requestApp, ParameterType.RequestBody);
                 IRestResponse response = client.Execute(request);
 
-                //convert response to object
-                responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ActivateUserResponseModel>(response.Content);
+                switch(response.StatusCode)
+                {
+                    case System.Net.HttpStatusCode.OK:
+                        //convert response to object
+                        responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ActivateUserResponseModel>(response.Content);
+                        break;
+                    case System.Net.HttpStatusCode.BadRequest:
+                        //convert error to object
+                        errResp = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponseModel>(response.Content);
+                        //throw custom exception
+                        httpEx = new RequestException(errResp.ErrorResponse[0].Message);
+                        httpEx.Data.Add("HttpStatusCode", response.StatusCode);
+                        httpEx.Data.Add("ErrorType", errResp.ErrorResponse[0].Type);
+                        throw httpEx;
+                    case System.Net.HttpStatusCode.Unauthorized:
+                        //convert error to object
+                        errResp = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponseModel>(response.Content);
+                        //throw custom exception
+                        httpEx = new RequestException(errResp.ErrorResponse[0].Message);
+                        httpEx.Data.Add("HttpStatusCode", response.StatusCode);
+                        httpEx.Data.Add("ErrorType", errResp.ErrorResponse[0].Type);
+                        throw httpEx;
+                    case System.Net.HttpStatusCode.InternalServerError:
+                        //convert error to object
+                        errResp = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponseModel>(response.Content);
+                        //throw custom exception
+                        httpEx = new RequestException(errResp.ErrorResponse[0].Message);
+                        httpEx.Data.Add("HttpStatusCode", response.StatusCode);
+                        httpEx.Data.Add("ErrorType", errResp.ErrorResponse[0].Type);
+                        throw httpEx;
+                    default:
+                        //throw custom exception
+                        httpEx = new RequestException();
+                        httpEx.Data.Add("HttpStatusCode", response.StatusCode);
+                        throw httpEx;
+                }                
+
             }
             catch(Exception ex)
             {
-
+                throw ex;
             }
 
             return responseModel;
@@ -41,9 +78,9 @@ namespace ZethconLibrary
     public struct ActivateUserRequestModel
     {
         public string AuthToken;
-        public ActivateUserRequest ActivateUserRequest;
+        public ActivateUserRequest[] ActivateUserRequest;
 
-        public ActivateUserRequestModel(string authtoken, ActivateUserRequest activateUserRequest)
+        public ActivateUserRequestModel(string authtoken, ActivateUserRequest[] activateUserRequest)
         {
             AuthToken = authtoken;
             ActivateUserRequest = activateUserRequest;
@@ -72,15 +109,5 @@ namespace ZethconLibrary
 
     #endregion
 
-    #region Response exception
 
-    public class ActivateUserRequestException : Exception
-    {
-        public ActivateUserRequestException(string message)
-            : base(message)
-        {
-        }
-    }
-
-    #endregion
 }
