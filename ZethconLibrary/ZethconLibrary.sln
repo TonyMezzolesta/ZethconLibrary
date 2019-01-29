@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZethconLibrary", "ZethconLibrary.csproj", "{37B22E44-0BD3-4541-8D63-3F184ADA5C3C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "..\TestApp\TestApp.csproj", "{A2D0AFE0-0AF3-4B34-9A2E-BED44D3048FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{37B22E44-0BD3-4541-8D63-3F184ADA5C3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37B22E44-0BD3-4541-8D63-3F184ADA5C3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37B22E44-0BD3-4541-8D63-3F184ADA5C3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2D0AFE0-0AF3-4B34-9A2E-BED44D3048FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2D0AFE0-0AF3-4B34-9A2E-BED44D3048FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2D0AFE0-0AF3-4B34-9A2E-BED44D3048FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2D0AFE0-0AF3-4B34-9A2E-BED44D3048FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

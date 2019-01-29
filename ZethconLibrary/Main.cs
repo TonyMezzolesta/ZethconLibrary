@@ -34,28 +34,15 @@ namespace ZethconLibrary
 
     #region Reponse Error Object
 
-    public struct ErrorResponseModel
+    public class Error
     {
-        public string Error;
-        public ErrorResponse[] ErrorResponse;
-
-        public ErrorResponseModel(string error, ErrorResponse[] errorResponse)
-        {
-            Error = error;
-            ErrorResponse = errorResponse;
-        }
+        public string type { get; set; }
+        public string message { get; set; }
     }
 
-    public struct ErrorResponse
+    public class ErrorResponseModel
     {
-        public string Type;
-        public string Message;
-
-        public ErrorResponse(string type, string message)
-        {
-            Type = type;
-            Message = message;
-        }
+        public Error error { get; set; }
     }
 
     #endregion

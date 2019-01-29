@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace ZethconLibrary
                 var request = new RestRequest(Method.POST);
                 request.AddHeader("cache-control", "no-cache");
                 request.AddHeader("Content-Type", "application/json");
-                request.AddParameter("undefined", requestApp, ParameterType.RequestBody);
+                request.AddParameter("undefined", JObject.FromObject(requestApp), ParameterType.RequestBody);
                 IRestResponse response = client.Execute(request);
 
                 switch(response.StatusCode)
@@ -34,35 +35,34 @@ namespace ZethconLibrary
                         //convert error to object
                         errResp = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponseModel>(response.Content);
                         //throw custom exception
-                        httpEx = new RequestException(errResp.ErrorResponse[0].Message);
+                        httpEx = new RequestException(errResp.error.message);
                         httpEx.Data.Add("HttpStatusCode", response.StatusCode);
-                        httpEx.Data.Add("ErrorType", errResp.ErrorResponse[0].Type);
+                        httpEx.Data.Add("ErrorType", errResp.error.type);
                         throw httpEx;
                     case System.Net.HttpStatusCode.Unauthorized:
                         //convert error to object
                         errResp = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponseModel>(response.Content);
                         //throw custom exception
-                        httpEx = new RequestException(errResp.ErrorResponse[0].Message);
+                        httpEx = new RequestException(errResp.error.message);
                         httpEx.Data.Add("HttpStatusCode", response.StatusCode);
-                        httpEx.Data.Add("ErrorType", errResp.ErrorResponse[0].Type);
+                        httpEx.Data.Add("ErrorType", errResp.error.type);
                         throw httpEx;
                     case System.Net.HttpStatusCode.InternalServerError:
                         //convert error to object
                         errResp = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponseModel>(response.Content);
                         //throw custom exception
-                        httpEx = new RequestException(errResp.ErrorResponse[0].Message);
+                        httpEx = new RequestException(errResp.error.message);
                         httpEx.Data.Add("HttpStatusCode", response.StatusCode);
-                        httpEx.Data.Add("ErrorType", errResp.ErrorResponse[0].Type);
+                        httpEx.Data.Add("ErrorType", errResp.error.type);
                         throw httpEx;
                     default:
                         //throw custom exception
-                        httpEx = new RequestException();
                         httpEx.Data.Add("HttpStatusCode", response.StatusCode);
                         throw httpEx;
                 }                
 
             }
-            catch(Exception ex)
+            catch(RequestException ex)
             {
                 throw ex;
             }
@@ -75,28 +75,6 @@ namespace ZethconLibrary
 
     #region Structure
 
-    public struct ActivateUserRequestModel
-    {
-        public string AuthToken;
-        public ActivateUserRequest[] ActivateUserRequest;
-
-        public ActivateUserRequestModel(string authtoken, ActivateUserRequest[] activateUserRequest)
-        {
-            AuthToken = authtoken;
-            ActivateUserRequest = activateUserRequest;
-        }
-    }
-
-    public struct ActivateUserRequest
-    {
-        public string Nameid;
-
-        public ActivateUserRequest(string nameid)
-        {
-            Nameid = nameid;
-        }
-    }
-
     public struct ActivateUserResponseModel
     {
         public string User;
@@ -105,6 +83,17 @@ namespace ZethconLibrary
         {
             User = user;
         }
+    }
+
+    public class Request
+    {
+        public string nameid { get; set; }
+    }
+
+    public class ActivateUserRequestModel
+    {
+        public string authtoken { get; set; }
+        public Request request { get; set; }
     }
 
     #endregion
